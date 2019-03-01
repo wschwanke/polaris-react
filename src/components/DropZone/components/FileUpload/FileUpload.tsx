@@ -37,7 +37,46 @@ export interface Props {
 export type CombinedProps = Props &
   WithAppProviderProps &
   WithContextTypes<DropZoneContext>;
+
 export class FileUpload extends React.Component<CombinedProps, State> {
+  static getDerivedStateFromProps(
+    nextProps: CombinedProps,
+    {actionTitle, actionHint}: State,
+  ) {
+    const hasActionTitleChanged = nextProps.actionTitle !== actionTitle;
+    const hasActionHintChanged = nextProps.actionHint !== actionHint;
+
+    if (!hasActionTitleChanged && !hasActionHintChanged) {
+      return null;
+    }
+
+    const {
+      polaris: {
+        intl: {translate},
+      },
+      context: {type},
+    } = nextProps;
+    const suffix = capitalize(type);
+    const nextState: Partial<State> = {};
+    if (nextProps.actionTitle && nextProps.actionTitle !== actionTitle) {
+      nextState.actionTitle = nextProps.actionTitle;
+    } else if (!nextProps.actionTitle && actionTitle) {
+      nextState.actionTitle = translate(
+        `Polaris.DropZone.FileUpload.actionTitle${suffix}`,
+      );
+    }
+
+    if (nextProps.actionHint && nextProps.actionHint !== actionHint) {
+      nextState.actionHint = nextProps.actionHint;
+    } else if (!nextProps.actionHint && actionHint) {
+      nextState.actionHint = translate(
+        `Polaris.DropZone.FileUpload.actionHint${suffix}`,
+      );
+    }
+
+    return nextState;
+  }
+
   constructor(props: CombinedProps) {
     super(props);
 
@@ -55,28 +94,6 @@ export class FileUpload extends React.Component<CombinedProps, State> {
       ),
       actionHint: translate(`Polaris.DropZone.FileUpload.actionHint${suffix}`),
     };
-  }
-
-  updateStateFromProps(props: Props) {
-    const {actionTitle, actionHint} = this.state;
-
-    if (props.actionTitle && props.actionTitle !== actionTitle) {
-      this.setState({actionTitle: props.actionTitle});
-    }
-
-    if (props.actionHint && props.actionHint !== actionHint) {
-      this.setState({actionHint: props.actionHint});
-    }
-  }
-
-  // eslint-disable-next-line react/no-deprecated
-  componentWillReceiveProps(props: Props) {
-    this.updateStateFromProps(props);
-  }
-
-  // eslint-disable-next-line react/no-deprecated
-  componentWillMount() {
-    this.updateStateFromProps(this.props);
   }
 
   render() {
