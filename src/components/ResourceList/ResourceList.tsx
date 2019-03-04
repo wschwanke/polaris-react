@@ -299,20 +299,6 @@ export class ResourceList extends React.Component<CombinedProps, State> {
     };
   }
 
-  // eslint-disable-next-line react/no-deprecated
-  componentWillReceiveProps(nextProps: Props) {
-    const {selectedItems} = this.props;
-
-    if (
-      selectedItems &&
-      selectedItems.length > 0 &&
-      (!nextProps.selectedItems || nextProps.selectedItems.length === 0) &&
-      !isSmallScreen()
-    ) {
-      this.setState({selectMode: false});
-    }
-  }
-
   componentDidMount() {
     this.forceUpdate();
     if (this.props.loading) {
@@ -320,7 +306,13 @@ export class ResourceList extends React.Component<CombinedProps, State> {
     }
   }
 
-  componentDidUpdate({loading: prevLoading, items: prevItems}: Props) {
+  componentDidUpdate({
+    loading: prevLoading,
+    items: prevItems,
+    selectedItems: prevSelectedItems,
+  }: Props) {
+    const {selectedItems, loading} = this.props;
+
     if (
       this.listRef.current &&
       this.itemsExist() &&
@@ -329,8 +321,18 @@ export class ResourceList extends React.Component<CombinedProps, State> {
       this.forceUpdate();
     }
 
-    if (this.props.loading && !prevLoading) {
+    if (loading && !prevLoading) {
       this.setLoadingPosition();
+    }
+
+    if (
+      prevSelectedItems &&
+      prevSelectedItems.length > 0 &&
+      (!selectedItems || selectedItems.length === 0) &&
+      !isSmallScreen()
+    ) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({selectMode: false});
     }
   }
 
@@ -493,12 +495,12 @@ export class ResourceList extends React.Component<CombinedProps, State> {
     const spinnerSize = items.length < 2 ? 'small' : 'large';
 
     const loadingOverlay = loading ? (
-      <React.Fragment>
+      <>
         <div className={styles.SpinnerContainer} style={spinnerStyle}>
           <Spinner size={spinnerSize} accessibilityLabel="Items are loading" />
         </div>
         <div className={styles.LoadingOverlay} />
-      </React.Fragment>
+      </>
     ) : null;
 
     const className = classNames(
