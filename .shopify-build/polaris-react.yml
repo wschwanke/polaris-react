@@ -14,7 +14,8 @@ shared:
     run:
       - yarn run build
       - ./.shopify-build/setup-consumer-test.sh web
-      - yarn --cwd ./web run build
+      - yarn --cwd ./web run sewing-kit build build
+      - sewing-kit build --heap 9000 --client-only --baseline-only --source-maps off && sewing-kit build --heap 9000 --server-only --no-clean --no-graphql --no-optimize-assets --source-maps off && sewing-kit build --heap 4000 --service-worker-only --no-clean --no-graphql --no-optimize-assets
     env:
       SHOPIFY_BUILD_MEMORY_LIMIT: 8g
   build-styleguide: &build-styleguide
