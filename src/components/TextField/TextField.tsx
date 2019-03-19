@@ -9,6 +9,7 @@ import Connected from '../Connected';
 
 import {Error, Key} from '../../types';
 import {withAppProvider, WithAppProviderProps} from '../AppProvider';
+import Icon from '../Icon';
 import {Resizer, Spinner} from './components';
 import styles from './TextField.scss';
 
@@ -52,6 +53,8 @@ export interface BaseProps {
   labelHidden?: boolean;
   /** Disable the input */
   disabled?: boolean;
+  /** Show a clear text button in the input */
+  clearButton?: boolean;
   /** Disable editing of the input */
   readOnly?: boolean;
   /** Automatically focus the input */
@@ -174,6 +177,7 @@ class TextField extends React.PureComponent<CombinedProps, State> {
       label,
       labelAction,
       labelHidden,
+      clearButton,
       helpText,
       prefix,
       suffix,
@@ -251,6 +255,17 @@ class TextField extends React.PureComponent<CombinedProps, State> {
         {characterCountText}
       </div>
     ) : null;
+
+    const clearButtonMarkup =
+      ((type === 'search' && clearButton !== false) || clearButton) &&
+      (type !== 'number' && !disabled) ? (
+        <button
+          className={styles.ClearButton}
+          onClick={this.handleClearButtonPress}
+        >
+          <Icon source="circleCancel" color="inkLightest" />
+        </button>
+      ) : null;
 
     const spinnerMarkup =
       type === 'number' && !disabled ? (
@@ -354,6 +369,7 @@ class TextField extends React.PureComponent<CombinedProps, State> {
             {input}
             {suffixMarkup}
             {characterCountMarkup}
+            {clearButtonMarkup}
             {spinnerMarkup}
             <div className={styles.Backdrop} />
             {resizer}
@@ -395,6 +411,15 @@ class TextField extends React.PureComponent<CombinedProps, State> {
 
     const newValue = Math.min(max, Math.max(numericValue + steps * step, min));
     onChange(String(newValue.toFixed(decimalPlaces)), this.state.id);
+  }
+
+  @autobind
+  private handleClearButtonPress() {
+    const {onChange} = this.props;
+    if (onChange == null) {
+      return;
+    }
+    onChange('', this.state.id);
   }
 
   @autobind

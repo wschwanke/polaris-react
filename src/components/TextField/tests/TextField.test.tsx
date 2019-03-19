@@ -812,4 +812,69 @@ describe('<TextField />', () => {
       expect(textField.find(Connected).prop('right')).toEqual(connectedRight);
     });
   });
+
+  describe('clearButton', () => {
+    it('adds a clear button that clears the input value', () => {
+      const spy = jest.fn();
+      const textField = mountWithAppProvider(
+        <TextField 
+          id="MyTextField"
+          label="TextField"
+          onChange={spy}
+          clearButton
+        />
+      )
+      textField.find('.ClearButton').simulate('click');
+      expect(spy).toHaveBeenCalledWith('', 'MyTextField');
+    })
+  });
+
+  it('does not render when the clearButton prop is not passed', () => {
+    const textField = mountWithAppProvider(
+      <TextField 
+        id="MyTextField"
+        label="TextField"
+        onChange={noop}
+      />
+    )
+    expect(textField.find('.ClearButton').exists()).toBeFalsy();
+  })
+
+  it('does not render in number inputs, even if clearButton prop is passed', () => {
+    const textField = mountWithAppProvider(
+      <TextField 
+        id="MyTextField"
+        label="TextField"
+        onChange={noop}
+        type="number"
+        clearButton
+      />
+    )
+    expect(textField.find('.ClearButton').exists()).toBeFalsy();
+  })
+
+  it('renders in search inputs by default', () => {
+    const textField = mountWithAppProvider(
+      <TextField 
+        id="MyTextField"
+        label="TextField"
+        onChange={noop}
+        type="search"
+      />
+    )
+    expect(textField.find('.ClearButton').exists()).toBeTruthy();
+  })
+
+  it('does not render in search inputs when clearButton is false', () => {
+    const textField = mountWithAppProvider(
+      <TextField 
+        id="MyTextField"
+        label="TextField"
+        onChange={noop}
+        type="search"
+        clearButton={false}
+      />
+    )
+    expect(textField.find('.ClearButton').exists()).toBeFalsy();
+  })
 });
