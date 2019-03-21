@@ -1,6 +1,10 @@
 import * as React from 'react';
 import {noop} from '@shopify/javascript-utilities/other';
-import {shallowWithAppProvider, mountWithAppProvider, findByTestID} from 'test-utilities';
+import {
+  shallowWithAppProvider,
+  mountWithAppProvider,
+  findByTestID,
+} from 'test-utilities';
 import {InlineError, Labelled, Connected, Select} from 'components';
 import {Resizer} from '../components';
 import TextField from '../TextField';
@@ -816,68 +820,64 @@ describe('<TextField />', () => {
   describe('clearButton', () => {
     it('renders a clear button in search inputs with a value', () => {
       const textField = mountWithAppProvider(
-        <TextField 
+        <TextField
           id="MyTextField"
           label="TextField"
           onChange={noop}
           type="search"
           value="test value"
-        />
-      )
+        />,
+      );
       expect(findByTestID(textField, 'clearButton').exists()).toBeTruthy();
-    })
+    });
 
     it('does not render in search inputs without a value', () => {
       const textField = mountWithAppProvider(
-        <TextField 
-          id="MyTextField"
-          label="TextField"
-          onChange={noop}
-        />
-      )
+        <TextField id="MyTextField" label="TextField" onChange={noop} />,
+      );
       expect(findByTestID(textField, 'clearButton').exists()).toBeFalsy();
-    })
+    });
 
     it('calls onChange() with an empty value when the clear button clicked', () => {
       const spy = jest.fn();
       const textField = mountWithAppProvider(
-        <TextField 
+        <TextField
           id="MyTextField"
           label="TextField"
           type="search"
           onChange={spy}
           value="test value"
-        />
-      )
+        />,
+      );
       findByTestID(textField, 'clearButton').simulate('click');
       expect(spy).toHaveBeenCalledWith('', 'MyTextField');
-    })
-  
+    });
+
     it('does not render in search inputs when false', () => {
       const textField = mountWithAppProvider(
-        <TextField 
+        <TextField
           id="MyTextField"
           label="TextField"
           onChange={noop}
           type="search"
           value="test value"
           clearButton={false}
-        />
-      )
+        />,
+      );
       expect(findByTestID(textField, 'clearButton').exists()).toBeFalsy();
-    })
+    });
 
     it('does not render a clear button when type="text"', () => {
       const textField = mountWithAppProvider(
-        <TextField 
+        <TextField
           id="MyTextField"
           label="TextField"
           onChange={noop}
           type="text"
           value="test value"
-        />
-      )
+        />,
+      );
       expect(findByTestID(textField, 'clearButton').exists()).toBeFalsy();
-    })
+    });
   });
 });
