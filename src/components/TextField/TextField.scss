@@ -131,7 +131,7 @@ $stacking-order: (
   // Hide webkit search clear button
   &[type='search'] {
     &::-webkit-search-cancel-button {
-      -webkit-appearance: none;
+      appearance: none;
     }
   }
 }
@@ -203,13 +203,15 @@ $stacking-order: (
 .ClearButton {
   z-index: z-index(contents, $stacking-order);
   appearance: none;
+  background: none;
   border: none;
   padding: 0;
   margin: 0 spacing(tight);
   cursor: pointer;
 
-  svg:hover {
-    fill: color('ink', 'lighter');
+  &:hover,
+  &:focus {
+    @include color-icon('ink', 'lighter');
   }
 }
 

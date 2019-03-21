@@ -257,9 +257,12 @@ class TextField extends React.PureComponent<CombinedProps, State> {
     ) : null;
 
     const clearButtonMarkup =
-      ((type === 'search' && clearButton !== false) || clearButton) &&
-      (type !== 'number' && !disabled) ? (
+      type === 'search' &&
+      clearButton !== false &&
+      !disabled &&
+      normalizedValue ? (
         <button
+          testID="clearButton"
           className={styles.ClearButton}
           onClick={this.handleClearButtonPress}
         >
@@ -415,11 +418,12 @@ class TextField extends React.PureComponent<CombinedProps, State> {
 
   @autobind
   private handleClearButtonPress() {
+    const {id} = this.state;
     const {onChange} = this.props;
     if (onChange == null) {
       return;
     }
-    onChange('', this.state.id);
+    onChange('', id);
   }
 
   @autobind
