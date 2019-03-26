@@ -1,4 +1,4 @@
-function timeout(ms) {
+function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
@@ -9,12 +9,12 @@ function retry(functionToTry, maxAttempts = 3, delay = 1000) {
       resolve();
     } catch (error) {
       const remainingAttempts = maxAttempts - 1;
-      if (remainingAttempts <= 0) {
-        reject(error);
-      } else {
-        await timeout(delay);
-        retry(functionToTry, remainingAttempts, delay);
+      if (remainingAttempts > 0) {
+        await sleep(delay);
+        await retry(functionToTry, remainingAttempts, delay);
       }
+
+      reject(error);
     }
   });
 }
