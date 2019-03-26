@@ -14,8 +14,13 @@ Use [the changelog guidelines](https://git.io/polaris-changelog-guidelines) to f
 
 - Updated open styleguide pr to create multiple pull requests to update `polaris-react` across multiple repos ([#1069](https://github.com/Shopify/polaris-react/pull/1069))
 - Updated the pull request creation to retry when it fails ([#1069](https://github.com/Shopify/polaris-react/pull/1069))
+- Added a public `focus` method on `Banner` ([#1219](https://github.com/Shopify/polaris-react/pull/1219))
 
 ### Bug fixes
+
+- Fixed disabled states while loading for `ResourceList` ([#1237](https://github.com/Shopify/polaris-react/pull/1237))
+- Fixed `Checkbox` from losing focus and not receiving some modified events([#1112](https://github.com/Shopify/polaris-react/pull/1112))
+- Added translation for the cancel button on the `ResourceList` `BulkActions` ([#1243](https://github.com/Shopify/polaris-react/pull/1243))
 
 ### Documentation
 
