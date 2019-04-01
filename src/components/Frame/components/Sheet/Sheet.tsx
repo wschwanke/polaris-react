@@ -8,6 +8,7 @@ import {navigationBarCollapsed} from '../../../../utilities/breakpoints';
 import {Key} from '../../../../types';
 import {layer, overlay, Duration} from '../../../shared';
 
+import Backdrop from '../../../Backdrop';
 import TrapFocus from '../../../TrapFocus';
 import Portal from '../../../Portal';
 import KeypressListener from '../../../KeypressListener';
@@ -93,6 +94,10 @@ export default class Sheet extends React.PureComponent<Props, State> {
       ...sharedTransitionProps,
     };
 
+    const backdropMarkup = open ? (
+      <Backdrop transparent onClick={onClose} />
+    ) : null;
+
     return (
       <Portal idPrefix="sheet">
         <CSSTransition {...finalTransitionProps}>
@@ -100,6 +105,7 @@ export default class Sheet extends React.PureComponent<Props, State> {
         </CSSTransition>
         <KeypressListener keyCode={Key.Escape} handler={onClose} />
         <EventListener event="resize" handler={this.handleResize} />
+        {backdropMarkup}
       </Portal>
     );
   }
