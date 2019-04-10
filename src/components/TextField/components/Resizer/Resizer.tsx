@@ -12,6 +12,7 @@ export interface Props {
 export default class Resizer extends React.PureComponent<Props, never> {
   private contentNode: HTMLElement | null = null;
   private minimumLinesNode: HTMLElement | null = null;
+  private animationFrame: number | null = null;
 
   componentDidMount() {
     this.handleHeightCheck();
@@ -25,6 +26,12 @@ export default class Resizer extends React.PureComponent<Props, never> {
 
   componentDidUpdate() {
     this.handleHeightCheck();
+  }
+
+  componentWillUnmount() {
+    if (this.animationFrame) {
+      cancelAnimationFrame(this.animationFrame);
+    }
   }
 
   render() {
@@ -56,21 +63,26 @@ export default class Resizer extends React.PureComponent<Props, never> {
   }
 
   private handleHeightCheck = () => {
-    if (this.contentNode == null || this.minimumLinesNode == null) {
-      return;
+    if (this.animationFrame) {
+      cancelAnimationFrame(this.animationFrame);
     }
 
-    const contentHeight = this.contentNode.offsetHeight;
-    const minimumHeight = this.setMinimumLinesNode
-      ? this.minimumLinesNode.offsetHeight
-      : 0;
-    const newHeight = Math.max(contentHeight, minimumHeight);
+    this.animationFrame = requestAnimationFrame(() => {
+      if (this.contentNode == null || this.minimumLinesNode == null) {
+        return;
+      }
 
-    const {currentHeight, onHeightChange} = this.props;
+      const contentHeight = this.contentNode.offsetHeight;
+      const minimumHeight = this.minimumLinesNode
+        ? this.minimumLinesNode.offsetHeight
+        : 0;
+      const newHeight = Math.max(contentHeight, minimumHeight);
+      const {currentHeight, onHeightChange} = this.props;
 
-    if (newHeight !== currentHeight) {
-      onHeightChange(newHeight);
-    }
+      if (newHeight !== currentHeight) {
+        onHeightChange(newHeight);
+      }
+    });
   };
 
   private setContentNode = (node: HTMLElement | null) => {

@@ -18,6 +18,8 @@ Use [the changelog guidelines](https://git.io/polaris-changelog-guidelines) to f
 
 - Added an icon and screen reader hint when `Link` opens a new tab ([#1142](https://github.com/Shopify/polaris-react/pull/1247))
 
+- Updated `Resizer` to schedule `handleHeightCheck` to run in next animation frame ([#1301](https://github.com/Shopify/polaris-react/pull/1301))
+
 ### Bug fixes
 
 - Fixed Search overlay stretching below the viewport

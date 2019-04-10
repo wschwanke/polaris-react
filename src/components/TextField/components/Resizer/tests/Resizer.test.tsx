@@ -9,6 +9,16 @@ describe('<Resizer />', () => {
     onHeightChange: noop,
     contents: 'Contents',
   };
+  let requestAnimationFrameSpy: jest.SpyInstance;
+
+  beforeEach(() => {
+    requestAnimationFrameSpy = jest.spyOn(window, 'requestAnimationFrame');
+    requestAnimationFrameSpy.mockImplementation((cb) => cb());
+  });
+
+  afterEach(() => {
+    requestAnimationFrameSpy.mockRestore();
+  });
 
   describe('contents', () => {
     it('renders contents', () => {
