@@ -12,6 +12,7 @@ function retry(functionToTry, maxAttempts = 3, delay = 1000) {
       if (remainingAttempts > 0) {
         await sleep(delay);
         await retry(functionToTry, remainingAttempts, delay);
+        resolve();
       }
 
       reject(error);
