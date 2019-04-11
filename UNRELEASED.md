@@ -8,6 +8,10 @@ Use [the changelog guidelines](https://git.io/polaris-changelog-guidelines) to f
 
 ### Breaking changes
 
+### Deprecations
+
+- Deprecated Navigation `Item`'s `iconBody` prop. Pass a string into the `icon` prop instead. ([#1299](https://github.com/Shopify/polaris-react/pull/1299))
+
 ### New components
 
 ### Enhancements
@@ -15,19 +19,29 @@ Use [the changelog guidelines](https://git.io/polaris-changelog-guidelines) to f
 - Updated open styleguide pr to create multiple pull requests to update `polaris-react` across multiple repos ([#1069](https://github.com/Shopify/polaris-react/pull/1069))
 - Updated the pull request creation to retry when it fails ([#1069](https://github.com/Shopify/polaris-react/pull/1069))
 - Added a public `focus` method on `Banner` ([#1219](https://github.com/Shopify/polaris-react/pull/1219))
+- Added an icon and screen reader hint when `Link` opens a new tab ([#1142](https://github.com/Shopify/polaris-react/pull/1247))
 
 ### Bug fixes
 
-- Fixed disabled states while loading for `ResourceList` ([#1237](https://github.com/Shopify/polaris-react/pull/1237))
-- Fixed `Checkbox` from losing focus and not receiving some modified events([#1112](https://github.com/Shopify/polaris-react/pull/1112))
-- Added translation for the cancel button on the `ResourceList` `BulkActions` ([#1243](https://github.com/Shopify/polaris-react/pull/1243))
+- Fixed Search overlay stretching below the viewport
+- Stopped passing the `polaris` context into the div rendered by `Scrollable` ([#1271](https://github.com/Shopify/polaris-react/pull/1271))
+- Fixed clickable area on sortable column headers on `DataTable` ([#1273](https://github.com/Shopify/polaris-react/pull/1273))
 
 ### Documentation
 
 ### Development workflow
 
+Upgraded Storybook to v5 ([#1140](https://github.com/Shopify/polaris-react/pull/1140))
+
 ### Dependency upgrades
 
+- Upgraded Polaris icons to include the full icon set ([#1284](https://github.com/Shopify/polaris-react/pull/1284))
+
 ### Code quality
+
+- Updated `ResourceList` to no longer use `componentWillReceiveProps`([#1235](https://github.com/Shopify/polaris-react/pull/1235))
+- Updated `Tabs` to no longer use `componentWillReceiveProps`([#1221](https://github.com/Shopify/polaris-react/pull/1221))
+- Removed an unneeded media query from Modal's `Header` component ([#1272](https://github.com/Shopify/polaris-react/pull/1272))
+- Replaces all instances where we pass a string representing a bundled icon into `Button`. Prefer passing in the React Component from `@shopify/polaris-icons` ([#1297](https://github.com/Shopify/polaris-react/pull/1297))
 
 ### Deprecations
