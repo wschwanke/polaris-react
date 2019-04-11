@@ -18,7 +18,6 @@ Use [the changelog guidelines](https://git.io/polaris-changelog-guidelines) to f
 
 - Updated open styleguide pr to create multiple pull requests to update `polaris-react` across multiple repos ([#1069](https://github.com/Shopify/polaris-react/pull/1069))
 - Updated the pull request creation to retry when it fails ([#1069](https://github.com/Shopify/polaris-react/pull/1069))
-- Added a public `focus` method on `Banner` ([#1219](https://github.com/Shopify/polaris-react/pull/1219))
 - Added an icon and screen reader hint when `Link` opens a new tab ([#1142](https://github.com/Shopify/polaris-react/pull/1247))
 
 ### Bug fixes
