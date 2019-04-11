@@ -6,7 +6,7 @@ import {
   findByTestID,
 } from 'test-utilities';
 import {InlineError, Labelled, Connected, Select} from 'components';
-import {Resizer} from '../components';
+import {Resizer, Spinner} from '../components';
 import TextField from '../TextField';
 
 describe('<TextField />', () => {
@@ -193,6 +193,17 @@ describe('<TextField />', () => {
         <TextField label="TextField" autoComplete onChange={noop} />,
       );
       expect(textField.find('input').prop('autoComplete')).toBe('on');
+    });
+
+    it('sets autoComplete to string value when string is given', () => {
+      const textField = shallowWithAppProvider(
+        <TextField
+          label="TextField"
+          autoComplete="firstName"
+          onChange={noop}
+        />,
+      );
+      expect(textField.find('input').prop('autoComplete')).toBe('firstName');
     });
   });
 
@@ -582,6 +593,18 @@ describe('<TextField />', () => {
         );
         const buttons = element.find('[role="button"]');
         expect(buttons).toHaveLength(0);
+      });
+
+      it('removes increment and decrement buttons when readOnly', () => {
+        const element = mountWithAppProvider(
+          <TextField
+            id="MyNumberField"
+            label="NumberField"
+            type="number"
+            readOnly
+          />,
+        );
+        expect(element.find(Spinner)).toHaveLength(0);
       });
 
       it('increments by step when value, step, or both are float numbers', () => {

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {PlusMinor} from '@shopify/polaris-icons';
 import {noop} from '@shopify/javascript-utilities/other';
 import {matchMedia} from '@shopify/jest-dom-mocks';
 import {Icon, UnstyledLink, Indicator, Badge} from 'components';
@@ -100,6 +101,34 @@ describe('<Nav.Item />', () => {
       const link = item.find(UnstyledLink);
       expect(link.exists()).toBe(true);
     });
+
+    it('renders a small badge with new status if the prop is provided with a string', () => {
+      const item = mountWithAppProvider(<Item label="some label" badge="1" />);
+
+      expect(item.find(Badge).props()).toMatchObject({
+        status: 'new',
+        size: 'small',
+        children: '1',
+      });
+    });
+
+    it('renders a badge if the prop is provided with an element', () => {
+      const item = mountWithAppProvider(
+        <Item label="some label" badge={<Badge>Custom badge</Badge>} />,
+      );
+
+      expect(item.find(Badge).text()).toContain('Custom badge');
+    });
+
+    it('renders a single new badge even if a badge prop is also provided', () => {
+      const item = mountWithAppProvider(
+        <Item label="some label" badge={<Badge>Custom badge</Badge>} new />,
+      );
+      const badge = item.find(Badge);
+
+      expect(badge).toHaveLength(1);
+      expect(badge.text()).toContain('New');
+    });
   });
 
   describe('with SubNavigationItems', () => {
@@ -165,12 +194,12 @@ describe('<Nav.Item />', () => {
   describe('delegated props', () => {
     it('delegates icon to <Icon />', () => {
       const item = mountWithAppProvider(
-        <Item label="some label" url="foo" disabled={false} icon="add" />,
+        <Item label="some label" url="foo" disabled={false} icon={PlusMinor} />,
         {
           context: {location: 'bar'},
         },
       );
-      expect(item.find(Icon).prop('source')).toBe('add');
+      expect(item.find(Icon).prop('source')).toBe(PlusMinor);
     });
 
     it('delegates iconBody to <Icon />', () => {

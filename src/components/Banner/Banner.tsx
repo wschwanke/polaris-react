@@ -1,5 +1,13 @@
 import * as React from 'react';
 import {classNames, variationName} from '@shopify/react-utilities/styles';
+import {
+  CancelSmallMinor,
+  CircleTickMajorTwotone,
+  FlagMajorTwotone,
+  CircleAlertMajorTwotone,
+  CircleDisabledMajorTwotone,
+  CircleInformationMajorTwotone,
+} from '@shopify/polaris-icons';
 
 import {
   Action,
@@ -12,14 +20,6 @@ import Heading from '../Heading';
 import ButtonGroup from '../ButtonGroup';
 import UnstyledLink from '../UnstyledLink';
 import Icon, {Props as IconProps} from '../Icon';
-
-import {
-  CircleTickMajorTwotone,
-  FlagMajorTwotone,
-  CircleAlertMajorTwotone,
-  CircleDisabledMajorTwotone,
-  CircleInformationMajorTwotone,
-} from '../../icons';
 
 import styles from './Banner.scss';
 
@@ -44,6 +44,11 @@ export interface Props {
 
 export default class Banner extends React.PureComponent<Props, never> {
   static contextTypes = contentContextTypes;
+  private wrapper = React.createRef<HTMLDivElement>();
+
+  public focus() {
+    this.wrapper.current && this.wrapper.current.focus();
+  }
 
   render() {
     const {
@@ -143,7 +148,7 @@ export default class Banner extends React.PureComponent<Props, never> {
       <div className={styles.Dismiss}>
         <Button
           plain
-          icon="cancelSmall"
+          icon={CancelSmallMinor}
           onClick={onDismiss}
           accessibilityLabel="Dismiss notification"
         />
@@ -155,6 +160,7 @@ export default class Banner extends React.PureComponent<Props, never> {
         className={className}
         // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
         tabIndex={0}
+        ref={this.wrapper}
         role={ariaRoleType}
         aria-live="polite"
         onMouseUp={handleMouseUp}

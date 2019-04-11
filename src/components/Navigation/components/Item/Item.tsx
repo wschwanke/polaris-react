@@ -1,7 +1,6 @@
 import * as React from 'react';
 
 import {classNames} from '@shopify/react-utilities/styles';
-import {autobind, memoize} from '@shopify/javascript-utilities/decorators';
 import {navigationBarCollapsed} from '../../../../utilities/breakpoints';
 
 import {Context, contextTypes} from '../../types';
@@ -39,8 +38,9 @@ interface SecondaryAction {
 
 export interface Props extends ItemURLDetails {
   icon?: IconProps['source'];
+  /** @deprecated The iconBody prop is deprecated and will be removed. Pass a string into the icon prop instead */
   iconBody?: string;
-  badge?: string | null;
+  badge?: React.ReactNode;
   label: string;
   disabled?: boolean;
   accessibilityLabel?: string;
@@ -90,16 +90,16 @@ export class BaseItem extends React.Component<CombinedProps, State> {
       url,
       icon,
       label,
-      badge,
       subNavigationItems = [],
       secondaryAction,
       disabled,
       onClick,
       accessibilityLabel,
       iconBody,
+      selected: selectedOverride,
+      badge,
       new: isNew,
       polaris: {intl},
-      selected: selectedOverride,
     } = this.props;
 
     const {location, onNavigationDismiss} = this.context;
@@ -116,26 +116,41 @@ export class BaseItem extends React.Component<CombinedProps, State> {
       </span>
     ) : null;
 
-    const badgeMarkup =
-      badge || isNew ? (
-        <div className={styles.Badge}>
-          <Badge status="new" size="small">
-            {badge || intl.translate('Polaris.Badge.STATUS_LABELS.new')}
-          </Badge>
-        </div>
-      ) : null;
+    if (iconBody) {
+      // eslint-disable-next-line no-console
+      console.warn(
+        'Deprecation: The iconBody prop is deprecated. Pass a string into the icon prop instead',
+      );
+    }
 
-    const iconMarkup = iconBody ? (
+    const iconBodyOrIcon = iconBody || icon;
+    const iconMarkup = iconBodyOrIcon ? (
       <div className={styles.Icon}>
-        <Icon source={iconBody} />
+        <Icon source={iconBodyOrIcon} />
       </div>
-    ) : (
-      icon && (
-        <div className={styles.Icon}>
-          <Icon source={icon} />
-        </div>
-      )
-    );
+    ) : null;
+
+    let badgeMarkup: React.ReactNode = null;
+    if (isNew) {
+      badgeMarkup = (
+        <Badge status="new" size="small">
+          {intl.translate('Polaris.Badge.STATUS_LABELS.new')}
+        </Badge>
+      );
+    } else if (typeof badge === 'string') {
+      badgeMarkup = (
+        <Badge status="new" size="small">
+          {badge}
+        </Badge>
+      );
+    } else {
+      badgeMarkup = badge;
+    }
+
+    const wrappedBadgeMarkup =
+      badgeMarkup == null ? null : (
+        <div className={styles.Badge}>{badgeMarkup}</div>
+      );
 
     const itemContentMarkup = (
       <React.Fragment>
@@ -144,7 +159,7 @@ export class BaseItem extends React.Component<CombinedProps, State> {
           {label}
           {indicatorMarkup}
         </span>
-        {badgeMarkup}
+        {wrappedBadgeMarkup}
       </React.Fragment>
     );
 
@@ -263,16 +278,13 @@ export class BaseItem extends React.Component<CombinedProps, State> {
     );
   }
 
-  @autobind
-  private handleResize() {
+  private handleResize = () => {
     if (!navigationBarCollapsed().matches && this.state.expanded) {
       this.setState({expanded: false});
     }
-  }
+  };
 
-  @autobind
-  @memoize()
-  private getClickHandler(onClick: Props['onClick']) {
+  private getClickHandler = (onClick: Props['onClick']) => {
     return (event: React.MouseEvent<HTMLElement>) => {
       const {currentTarget} = event;
       const {subNavigationItems} = this.props;
@@ -301,7 +313,7 @@ export class BaseItem extends React.Component<CombinedProps, State> {
         onClick();
       }
     };
-  }
+  };
 }
 
 export function isNavigationItemActive(

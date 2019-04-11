@@ -1,15 +1,17 @@
 import * as React from 'react';
+import {ReactWrapper} from 'enzyme';
 import {mountWithAppProvider} from 'test-utilities';
-import {Button, Icon, UnstyledLink, Heading} from 'components';
-import Banner from '..';
-
 import {
+  CirclePlusMinor,
   CircleAlertMajorTwotone,
   CircleDisabledMajorTwotone,
   CircleTickMajorTwotone,
   CircleInformationMajorTwotone,
   FlagMajorTwotone,
-} from '../../../icons';
+} from '@shopify/polaris-icons';
+
+import {Button, Icon, UnstyledLink, Heading} from 'components';
+import Banner from '..';
 
 describe('<Banner />', () => {
   it('renders a title', () => {
@@ -23,8 +25,8 @@ describe('<Banner />', () => {
   });
 
   it('passes the provided icon source to Icon', () => {
-    const banner = mountWithAppProvider(<Banner icon="circlePlus" />);
-    expect(banner.find(Icon).prop('source')).toBe('circlePlus');
+    const banner = mountWithAppProvider(<Banner icon={CirclePlusMinor} />);
+    expect(banner.find(Icon).prop('source')).toBe(CirclePlusMinor);
   });
 
   it('uses a greenDark circleCheckMark if status is success', () => {
@@ -112,5 +114,27 @@ describe('<Banner />', () => {
   it('renders a slim button with contentContext', () => {
     const button = bannerWithContentContext.find(Button);
     expect(button.prop('size')).toBe('slim');
+  });
+
+  describe('focus', () => {
+    it('exposes a function that allows the banner to be programmatically focused', () => {
+      class Test extends React.Component {
+        banner = React.createRef<any>();
+
+        componentDidMount() {
+          this.banner.current.focus();
+        }
+
+        render() {
+          return <Banner ref={this.banner} status="critical" />;
+        }
+      }
+
+      const div = mountWithAppProvider(<Test />)
+        .find('div')
+        .filterWhere((element: ReactWrapper) => element.prop('tabIndex') === 0);
+
+      expect(div.getDOMNode()).toBe(document.activeElement);
+    });
   });
 });

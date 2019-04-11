@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {CSSTransition, Transition} from 'react-transition-group';
-import {autobind, debounce} from '@shopify/javascript-utilities/decorators';
+import debounce from 'lodash/debounce';
 import {classNames} from '@shopify/react-utilities/styles';
 import {DisableableAction, Action, ActionListSection} from '../../../../types';
 import {Duration} from '../../../shared';
@@ -76,6 +76,28 @@ export class BulkActions extends React.PureComponent<CombinedProps, State> {
   private promotedActionsWidths: number[] = [];
   private bulkActionsWidth = 0;
   private addedMoreActionsWidthForMeasuring = 0;
+
+  private handleResize = debounce(
+    () => {
+      const {smallScreenPopoverVisible, largeScreenPopoverVisible} = this.state;
+
+      if (this.containerNode) {
+        const containerWidth = this.containerNode.getBoundingClientRect().width;
+        if (containerWidth > 0) {
+          this.setState({containerWidth});
+        }
+      }
+
+      if (smallScreenPopoverVisible || largeScreenPopoverVisible) {
+        this.setState({
+          smallScreenPopoverVisible: false,
+          largeScreenPopoverVisible: false,
+        });
+      }
+    },
+    50,
+    {trailing: true},
+  );
 
   private get numberOfPromotedActionsToRender(): number {
     const {promotedActions} = this.props;
@@ -217,6 +239,7 @@ export class BulkActions extends React.PureComponent<CombinedProps, State> {
     const cancelButtonClassName = classNames(
       styles.Button,
       styles['Button-cancel'],
+      disabled && styles.disabled,
     );
     const cancelButton = (
       <button
@@ -224,8 +247,9 @@ export class BulkActions extends React.PureComponent<CombinedProps, State> {
         // eslint-disable-next-line react/jsx-no-bind
         onClick={this.setSelectMode.bind(this, false)}
         testID="btn-cancel"
+        disabled={disabled}
       >
-        Cancel
+        {intl.translate('Polaris.Common.cancel')}
       </button>
     );
 
@@ -243,6 +267,7 @@ export class BulkActions extends React.PureComponent<CombinedProps, State> {
               content={intl.translate(
                 'Polaris.ResourceList.BulkActions.actionsActivatorLabel',
               )}
+              disabled={disabled}
             />
           }
           onClose={this.toggleSmallScreenPopover}
@@ -265,6 +290,7 @@ export class BulkActions extends React.PureComponent<CombinedProps, State> {
                 {...action}
                 key={index}
                 handleMeasurement={this.handleMeasurement}
+                disabled={disabled}
               />
             ))
         : null;
@@ -395,70 +421,43 @@ export class BulkActions extends React.PureComponent<CombinedProps, State> {
     );
   }
 
-  @autobind
-  private setLargeScreenButtonsNode(node: HTMLElement | null) {
+  private setLargeScreenButtonsNode = (node: HTMLElement | null) => {
     this.largeScreenButtonsNode = node;
-  }
+  };
 
-  @autobind
-  private setContainerNode(node: HTMLElement | null) {
+  private setContainerNode = (node: HTMLElement | null) => {
     this.containerNode = node;
-  }
+  };
 
-  @autobind
-  private setMoreActionsNode(node: HTMLElement | null) {
+  private setMoreActionsNode = (node: HTMLElement | null) => {
     this.moreActionsNode = node;
-  }
+  };
 
-  @autobind
-  private setSelectMode(val: boolean) {
+  private setSelectMode = (val: boolean) => {
     const {onSelectModeToggle} = this.props;
     if (onSelectModeToggle) {
       onSelectModeToggle(val);
     }
-  }
+  };
 
-  @autobind
-  private toggleSmallScreenPopover() {
+  private toggleSmallScreenPopover = () => {
     this.setState(({smallScreenPopoverVisible}) => ({
       smallScreenPopoverVisible: !smallScreenPopoverVisible,
     }));
-  }
+  };
 
-  @autobind
-  private toggleLargeScreenPopover() {
+  private toggleLargeScreenPopover = () => {
     this.setState(({largeScreenPopoverVisible}) => ({
       largeScreenPopoverVisible: !largeScreenPopoverVisible,
     }));
-  }
+  };
 
-  @autobind
-  @debounce(50, {trailing: true})
-  private handleResize() {
-    const {smallScreenPopoverVisible, largeScreenPopoverVisible} = this.state;
-
-    if (this.containerNode) {
-      const containerWidth = this.containerNode.getBoundingClientRect().width;
-      if (containerWidth > 0) {
-        this.setState({containerWidth});
-      }
-    }
-
-    if (smallScreenPopoverVisible || largeScreenPopoverVisible) {
-      this.setState({
-        smallScreenPopoverVisible: false,
-        largeScreenPopoverVisible: false,
-      });
-    }
-  }
-
-  @autobind
-  private handleMeasurement(width: number) {
+  private handleMeasurement = (width: number) => {
     const {measuring} = this.state;
     if (measuring) {
       this.promotedActionsWidths.push(width);
     }
-  }
+  };
 }
 
 function instanceOfBulkActionListSectionArray(
