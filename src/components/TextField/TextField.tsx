@@ -413,15 +413,14 @@ class TextField extends React.PureComponent<CombinedProps, State> {
     onChange(String(newValue.toFixed(decimalPlaces)), this.state.id);
   };
 
-  @autobind
-  private handleClearButtonPress() {
+  private handleClearButtonPress = () => {
     const {id} = this.state;
     const {onChange} = this.props;
     if (onChange == null) {
       return;
     }
     onChange('', id);
-  }
+  };
 
   private handleExpandingResize = (height: number) => {
     this.setState({height});
